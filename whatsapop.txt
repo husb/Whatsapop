@@ -1,0 +1,34 @@
+cadastro, login e senha
+
+
+add usuario
+ter lista de contatos
+
+criar msg 1 -> 1
+envio de msgs offline (salvar msg off até o usuario entrar??)...
+
+
+
+usuario(login, senha)
+
+
+
+encontra contatos DAO
+
+guarda msgs off DAO
+
+entrega msgs off DAO
+
+recebimento e entrega de mensagens
+servidor e cliente
+msgs privadas, listar contatos apartir do  contatos.java
+
+//TODO
+
+
+
+
+
+
+
+

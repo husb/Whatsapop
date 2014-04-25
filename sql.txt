@@ -1,0 +1,65 @@
+/*  Tabela produtos com cod automatico, nome até 40 caracteres, e quantidade decimal(ex.: '10.00' */
+CREATE TABLE PRODUTOS(
+COD SERIAL PRIMARY KEY,
+NOME VARCHAR(40) NOT NULL,
+QUANTIDADE INTEGER NOT NULL
+);
+
+/* Tabela relatorios, com cod automatico, cod_produto fazendo referencia à tabela produtos, data transação usando DATE (ex.: '2013-05-14')   */
+CREATE TABLE RELATORIOS(
+COD SERIAL PRIMARY KEY,
+COD_PRODUTO INTEGER REFERENCES PRODUTOS(COD),
+DATA_TRANSACAO DATE,
+QUANTIDADE INTEGER
+);
+
+
+/* Tabela usuario, com cod automatico, nome(usuario do login) com até 15 caracteres e senha com até 15 caracteres livres  */
+CREATE TABLE USUARIOS(
+COD SERIAL PRIMARY KEY,
+NOME VARCHAR(15) NOT NULL,
+SENHA VARCHAR(15) NOT NULL
+);
+
+/* inserts dos dados para teste  */
+INSERT INTO USUARIOS(NOME, SENHA) VALUES
+('bernardo', 'teste123');
+INSERT INTO USUARIOS(NOME, SENHA) VALUES
+('Marco Mangan', 'senacrs');
+
+
+INSERT INTO PRODUTOS(NOME, QUANTIDADE) VALUES
+('Toner HP Deskjet 2400', 20.00);
+
+
+/* trigger */
+
+CREATE OR REPLACE FUNCTION f1() RETURNS TRIGGER AS
+$$
+DECLARE
+COD INTEGER = new.COD;
+QNT INTEGER = new.QUANTIDADE;
+BEGIN
+IF(tg_op='INSERT') THEN
+INSERT INTO RELATORIOS(COD_PRODUTO, DATA_TRANSACAO, QUANTIDADE) VALUES (COD,  CURRENT_DATE, QNT);
+END IF;
+IF(tg_op='UPDATE') THEN
+INSERT INTO RELATORIOS(COD_PRODUTO, DATA_TRANSACAO, QUANTIDADE) VALUES (COD,  CURRENT_DATE, QNT);
+END IF;
+RETURN new;
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE TRIGGER tf1 AFTER INSERT OR UPDATE OR DELETE ON PRODUTOS FOR EACH ROW EXECUTE PROCEDURE f1();
+
+/*  selects para teste */
+
+SELECT * FROM PRODUTOS;
+SELECT * FROM RELATORIOS;
+SELECT * FROM USUARIOs;
+
+
+/*  Testando se o usuário existe. */
+
+SELECT * FROM USUARIOS WHERE NOME='bernardo' AND SENHA='teste123';
